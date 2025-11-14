@@ -37,9 +37,6 @@ public class VagaService {
     }
 
     public void deleteById(Long id) {
-        if (!vagaRepository.existsById(id)) {
-            throw new RuntimeException("Vaga não encontrada");
-        }
         vagaRepository.deleteById(id);
     }
 

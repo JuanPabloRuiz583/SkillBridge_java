@@ -67,10 +67,10 @@ public class VagaController {
     }
 
     @PostMapping("/delete/{id}")
-    public String delete(@PathVariable Long id, RedirectAttributes redirect) {
+    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         vagaService.deleteById(id);
-        var message = messageSource.getMessage("delete", null, LocaleContextHolder.getLocale());
-        redirect.addFlashAttribute("message", message + " realizada com sucesso!");
+        String message = messageSource.getMessage("delete", null, "Vaga excluída", LocaleContextHolder.getLocale());
+        redirectAttributes.addFlashAttribute("message", message);
         return "redirect:/vaga";
     }
 
