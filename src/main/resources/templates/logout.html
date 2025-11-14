@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="emerald">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" />
+    <title>SkillBridge</title>
+</head>
+<body class="bg-green-50 min-h-screen flex flex-col justify-center items-center">
+
+<h1 class="text-3xl text-green-700 font-bold p-8">SkillBridge</h1>
+
+<div class="card bg-green-100 text-green-700 w-96 mx-auto">
+    <div class="card-body items-center text-center">
+        <h2 class="card-title">Logout</h2>
+        <p>Tem certeza que deseja sair?</p>
+        <div class="card-actions justify-end">
+            <a href="javascript:history.back()" class="btn btn-success">Cancelar</a>
+            <form method="post" th:action="${'/logout'}">
+                <button class="btn btn-success">Logout</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
