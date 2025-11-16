@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="_csrf" th:content="${_csrf.token}" />
+  <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Chat - SkillBridge IA</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 16px; background:#f3f4f6; }
+    .chat { max-width:900px; margin:0 auto; background:white; padding:16px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
+    .messages { height:60vh; overflow:auto; border:1px solid #e5e7eb; padding:12px; border-radius:6px; background:#fff; }
+    .msg { margin:8px 0; padding:10px; border-radius:8px; max-width:80%; word-break:break-word; }
+    .msg.user { background:#e0f2fe; margin-left:auto; text-align:right; }
+    .msg.bot { background:#f1f5f9; margin-right:auto; text-align:left; }
+    .composer { display:flex; gap:8px; margin-top:12px; }
+    input[type="text"]{ flex:1; padding:10px; border-radius:6px; border:1px solid #d1d5db; }
+    button{ padding:10px 14px; border-radius:6px; border:none; background:#2563eb; color:white; cursor:pointer; }
+    .meta { display:flex; gap:8px; align-items:center; }
+    .avatar { width:36px; height:36px; border-radius:50%; border:2px solid #2563eb; object-fit:cover; }
+  </style>
+</head>
+<body>
+<div class="chat">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+    <div>
+      <h2 style="margin:0">SkillBridge IA</h2>
+      <div class="meta" th:if="${username}">
+        <img th:if="${avatar}" th:src="${avatar}" alt="avatar" class="avatar" />
+        <span th:text="${username}"></span>
+      </div>
+    </div>
+    <div><a href="/" style="text-decoration:none;color:#2563eb">Voltar</a></div>
+  </div>
+
+  <div id="messages" class="messages" aria-live="polite"></div>
+
+  <div class="composer">
+    <input id="input" type="text" placeholder="Digite sua pergunta..." autocomplete="off" />
+    <button id="send">Enviar</button>
+  </div>
+</div>
+
+<script>
+  const messagesEl = document.getElementById('messages');
+  const inputEl = document.getElementById('input');
+  const sendBtn = document.getElementById('send');
+
+  const csrfMeta = document.querySelector('meta[name="_csrf"]');
+  const csrfHeaderMeta = document.querySelector('meta[name="_csrf_header"]');
+  const csrfToken = csrfMeta ? csrfMeta.getAttribute('content') : null;
+  const csrfHeader = csrfHeaderMeta ? csrfHeaderMeta.getAttribute('content') : 'X-CSRF-TOKEN';
+
+  function appendMsg(text, who) {
+    const div = document.createElement('div');
+    div.className = 'msg ' + (who === 'user' ? 'user' : 'bot');
+    div.textContent = text;
+    messagesEl.appendChild(div);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  async function send() {
+    const text = inputEl.value.trim();
+    if (!text) return;
+    appendMsg(text, 'user');
+    inputEl.value = '';
+    sendBtn.disabled = true;
+
+    try {
+      const headers = { 'Content-Type': 'application/json' };
+      if (csrfToken) headers[csrfHeader] = csrfToken;
+
+      const res = await fetch('/chat/api', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ message: text })
+      });
+
+      if (!res.ok) {
+        appendMsg('Erro: resposta inválida do servidor', 'bot');
+        return;
+      }
+
+      const data = await res.json();
+      appendMsg(data.reply || '(sem resposta)', 'bot');
+    } catch (e) {
+      appendMsg('Erro: falha na comunicação com a IA', 'bot');
+    } finally {
+      sendBtn.disabled = false;
+    }
+  }
+
+  sendBtn.addEventListener('click', send);
+  inputEl.addEventListener('keydown', (e) => { if (e.key === 'Enter') send(); });
+
+  // opcional: foco no input ao carregar
+  inputEl.focus();
+</script>
+</body>
+</html>
