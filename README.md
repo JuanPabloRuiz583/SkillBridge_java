@@ -1,0 +1,7 @@
+## **variaveis de ambiente**
+ ```bash
+   GITHUB_CLIENT_ID = Ov23li0Nu4JFz0n2ay1r
+   GITHUB_CLIENT_SECRET = 948617a4f142c1964d46d670371112340f8a964c
+   GOOGLE_CLIENT_ID = 412634895320-fuvf9cnj52cmdnpvk1huea1aim4v673n.apps.googleusercontent.com
+   GOOGLE_CLIENT_SECRET = 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
+   OPENAI_API_KEY= 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
