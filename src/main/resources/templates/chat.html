@@ -1,100 +1,212 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<html lang="pt-BR" data-theme="light" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="_csrf" th:content="${_csrf.token}" />
-  <meta name="_csrf_header" th:content="${_csrf.headerName}" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Chat - SkillBridge IA</title>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 16px; background:#f3f4f6; }
-    .chat { max-width:900px; margin:0 auto; background:white; padding:16px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
-    .messages { height:60vh; overflow:auto; border:1px solid #e5e7eb; padding:12px; border-radius:6px; background:#fff; }
-    .msg { margin:8px 0; padding:10px; border-radius:8px; max-width:80%; word-break:break-word; }
-    .msg.user { background:#e0f2fe; margin-left:auto; text-align:right; }
-    .msg.bot { background:#f1f5f9; margin-right:auto; text-align:left; }
-    .composer { display:flex; gap:8px; margin-top:12px; }
-    input[type="text"]{ flex:1; padding:10px; border-radius:6px; border:1px solid #d1d5db; }
-    button{ padding:10px 14px; border-radius:6px; border:none; background:#2563eb; color:white; cursor:pointer; }
-    .meta { display:flex; gap:8px; align-items:center; }
-    .avatar { width:36px; height:36px; border-radius:50%; border:2px solid #2563eb; object-fit:cover; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+
+    <!-- Tailwind + DaisyUI (mesmo padrão da tela de vaga) -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <title th:text="'SkillBridge - ' + #{chat.title}">SkillBridge - Chat IA</title>
 </head>
-<body>
-<div class="chat">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-    <div>
-      <h2 style="margin:0">SkillBridge IA</h2>
-      <div class="meta" th:if="${username}">
-        <img th:if="${avatar}" th:src="${avatar}" alt="avatar" class="avatar" />
-        <span th:text="${username}"></span>
-      </div>
+<body class="bg-base-200 min-h-screen flex flex-col">
+
+<!-- HEADER AZUL -->
+<header class="bg-blue-600 text-white p-4 shadow-lg">
+    <div class="flex items-start justify-between gap-4 max-w-5xl mx-auto">
+        <div>
+            <h1 class="text-2xl font-bold">Chat - SkillBridge IA</h1>
+            <p class="text-sm text-blue-100 mt-1">
+                Converse com a IA sobre vagas, currículo e plano de carreira.
+            </p>
+
+            <!-- Usuário logado -->
+            <div class="flex items-center gap-3 mt-3" th:if="${username}">
+                <div class="avatar" th:if="${avatar}">
+                    <div class="w-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                        <img th:src="${avatar}" alt="avatar do usuário">
+                    </div>
+                </div>
+                <div class="text-sm leading-tight">
+                    <span class="font-semibold block" th:text="${username}">Usuário</span>
+                    <span class="text-xs text-blue-100/80">Logado via OAuth2</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex items-center">
+            <a href="/vaga" class="btn btn-sm btn-neutral">
+                ← Voltar para vagas
+            </a>
+        </div>
     </div>
-    <div><a href="/vaga" style="text-decoration:none;color:#2563eb">Voltar</a></div>
-  </div>
+</header>
 
-  <div id="messages" class="messages" aria-live="polite"></div>
+<main class="flex-grow grid grid-cols-1 gap-6 p-6 place-items-center">
+    <!-- CARD DO CHAT -->
+    <section class="w-full max-w-3xl bg-base-100 shadow-xl rounded-lg p-4 md:p-6">
+        <h2 class="text-lg font-bold mb-3 text-base-content">
+            Assistente de carreira
+        </h2>
+        <p class="text-xs md:text-sm text-base-content/70 mb-4">
+            Faça perguntas específicas para receber respostas mais úteis. Ex:
+            <span class="font-medium">“Como adaptar meu currículo para desenvolvedor júnior?”</span>
+        </p>
 
-  <div class="composer">
-    <input id="input" type="text" placeholder="Digite sua pergunta..." autocomplete="off" />
-    <button id="send">Enviar</button>
-  </div>
-</div>
+        <!-- LISTA DE MENSAGENS -->
+        <div id="messages"
+             class="space-y-3 max-h-[60vh] min-h-[260px] overflow-y-auto pr-1 bg-base-200/40 rounded-lg p-3"
+             aria-live="polite"
+             aria-label="Mensagens do chat">
+            <div id="emptyHint" class="text-center text-sm text-base-content/60 mt-10">
+                <p class="font-semibold mb-1">Nenhuma mensagem ainda</p>
+                <p>Comece a conversa digitando sua pergunta abaixo.</p>
+            </div>
+        </div>
+
+        <div class="divider my-4"></div>
+
+        <!-- COMPOSER -->
+        <div class="flex flex-col gap-2">
+            <div class="flex items-end gap-2">
+                <textarea id="input"
+                          class="textarea textarea-bordered flex-1"
+                          rows="2"
+                          placeholder="Digite sua pergunta... (Enter envia, Shift+Enter quebra linha)"
+                          autocomplete="off"></textarea>
+                <button id="send" type="button" class="btn btn-primary">
+                    <span class="text-sm">➤</span>
+                    <span>Enviar</span>
+                </button>
+            </div>
+
+            <div id="typing" class="text-xs text-base-content/60 h-4"></div>
+
+            <p class="text-[0.7rem] text-base-content/60">
+                Dica: inclua detalhes sobre a vaga, seu perfil ou suas experiências para respostas mais direcionadas.
+            </p>
+        </div>
+    </section>
+</main>
 
 <script>
-  const messagesEl = document.getElementById('messages');
-  const inputEl = document.getElementById('input');
-  const sendBtn = document.getElementById('send');
+    const messagesEl   = document.getElementById('messages');
+    const inputEl      = document.getElementById('input');
+    const sendBtn      = document.getElementById('send');
+    const typingEl     = document.getElementById('typing');
+    const emptyHintEl  = document.getElementById('emptyHint');
 
-  const csrfMeta = document.querySelector('meta[name="_csrf"]');
-  const csrfHeaderMeta = document.querySelector('meta[name="_csrf_header"]');
-  const csrfToken = csrfMeta ? csrfMeta.getAttribute('content') : null;
-  const csrfHeader = csrfHeaderMeta ? csrfHeaderMeta.getAttribute('content') : 'X-CSRF-TOKEN';
+    const csrfMeta       = document.querySelector('meta[name="_csrf"]');
+    const csrfHeaderMeta = document.querySelector('meta[name="_csrf_header"]');
+    const csrfToken      = csrfMeta ? csrfMeta.getAttribute('content') : null;
+    const csrfHeader     = csrfHeaderMeta ? csrfHeaderMeta.getAttribute('content') : 'X-CSRF-TOKEN';
 
-  function appendMsg(text, who) {
-    const div = document.createElement('div');
-    div.className = 'msg ' + (who === 'user' ? 'user' : 'bot');
-    div.textContent = text;
-    messagesEl.appendChild(div);
-    messagesEl.scrollTop = messagesEl.scrollHeight;
-  }
+    let isSending = false;
 
-  async function send() {
-    const text = inputEl.value.trim();
-    if (!text) return;
-    appendMsg(text, 'user');
-    inputEl.value = '';
-    sendBtn.disabled = true;
-
-    try {
-      const headers = { 'Content-Type': 'application/json' };
-      if (csrfToken) headers[csrfHeader] = csrfToken;
-
-      const res = await fetch('/chat/api', {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({ message: text })
-      });
-
-      if (!res.ok) {
-        appendMsg('Erro: resposta inválida do servidor', 'bot');
-        return;
-      }
-
-      const data = await res.json();
-      appendMsg(data.reply || '(sem resposta)', 'bot');
-    } catch (e) {
-      appendMsg('Erro: falha na comunicação com a IA', 'bot');
-    } finally {
-      sendBtn.disabled = false;
+    function removeEmptyHint() {
+        if (emptyHintEl && emptyHintEl.parentNode) {
+            emptyHintEl.parentNode.removeChild(emptyHintEl);
+        }
     }
-  }
 
-  sendBtn.addEventListener('click', send);
-  inputEl.addEventListener('keydown', (e) => { if (e.key === 'Enter') send(); });
+    function formatTime(date) {
+        const d = date instanceof Date ? date : new Date();
+        return d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    }
 
-  // opcional: foco no input ao carregar
-  inputEl.focus();
+    function appendMsg(text, who) {
+        removeEmptyHint();
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'chat ' + (who === 'user' ? 'chat-end' : 'chat-start');
+
+        const header = document.createElement('div');
+        header.className = 'chat-header text-xs opacity-70 mb-1';
+        header.textContent = who === 'user' ? 'Você' : 'SkillBridge IA';
+
+        const bubble = document.createElement('div');
+        bubble.className = 'chat-bubble text-sm break-words whitespace-pre-wrap';
+        if (who === 'user') {
+            bubble.classList.add('chat-bubble-primary');
+        }
+
+        bubble.textContent = text;
+
+        const time = document.createElement('div');
+        time.className = 'chat-footer opacity-70 text-[0.65rem] mt-1';
+        time.textContent = formatTime(new Date());
+
+        wrapper.appendChild(header);
+        wrapper.appendChild(bubble);
+        wrapper.appendChild(time);
+
+        messagesEl.appendChild(wrapper);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    function setSending(flag) {
+        isSending = flag;
+        sendBtn.disabled = flag;
+        if (flag) {
+            typingEl.innerHTML =
+                'SkillBridge IA está digitando ' +
+                '<span class="loading loading-dots loading-xs align-middle"></span>';
+        } else {
+            typingEl.textContent = '';
+        }
+    }
+
+    async function send() {
+        const text = inputEl.value.trim();
+        if (!text || isSending) return;
+
+        appendMsg(text, 'user');
+        inputEl.value = '';
+        setSending(true);
+
+        try {
+            const headers = { 'Content-Type': 'application/json' };
+            if (csrfToken) headers[csrfHeader] = csrfToken;
+
+            const res = await fetch('/chat/api', {
+                method: 'POST',
+                headers,
+                body: JSON.stringify({ message: text })
+            });
+
+            if (!res.ok) {
+                appendMsg('Erro: resposta inválida do servidor.', 'bot');
+                return;
+            }
+
+            const data = await res.json();
+            appendMsg(data.reply || '(sem resposta da IA)', 'bot');
+        } catch (e) {
+            console.error(e);
+            appendMsg('Erro: falha na comunicação com a IA. Tente novamente em instantes.', 'bot');
+        } finally {
+            setSending(false);
+            inputEl.focus();
+        }
+    }
+
+    sendBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        send();
+    });
+
+    inputEl.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            send();
+        }
+    });
+
+    // foco inicial
+    inputEl.focus();
 </script>
 </body>
 </html>
