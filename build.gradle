@@ -56,7 +56,8 @@ dependencies {
 
     // Mensageria (RabbitMQ)
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
-
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    
     // Banco de dados
     runtimeOnly 'org.postgresql:postgresql'
 
