@@ -2,7 +2,7 @@
 <html lang="pt-BR" data-theme="light">
 <head>
     <meta charset="UTF-8">
-    <title>SkillBridge - Vagas</title>
+    <title th:text="#{vaga.page.title}" >SkillBridge - Vagas</title>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -20,11 +20,13 @@
     <div class="flex justify-between items-center mb-6">
         <div class="flex gap-3">
             <a href="/vaga/form" class="btn btn-primary">
-                <i class="fas fa-plus mr-2"></i> Nova Vaga
+                <i class="fas fa-plus mr-2"></i>
+                <span th:text="#{btn.new.vaga}">Nova Vaga</span>
             </a>
             <!-- CHAMADA PARA A PAGINA DE IA -->
             <a href="/chat" class="btn btn-secondary">
-                <i class="fas fa-robot mr-2"></i> Falar com a SkillBridge ia
+                <i class="fas fa-robot mr-2"></i>
+                <span th:text="#{btn.chat}">Falar com a SkillBridge ia</span>
             </a>
         </div>
         <div class="flex items-center gap-3">
@@ -35,8 +37,8 @@
             <details>
                 <summary class="btn btn-primary">🌎</summary>
                 <ul class="bg-blue-600 rounded-t-none p-2">
-                    <li><a href="?lang=pt_BR" class="text-white hover:bg-blue-700 px-4 py-2 block">🇧🇷 Português</a></li>
-                    <li><a href="?lang=en_US" class="text-white hover:bg-blue-700 px-4 py-2 block">🏴 English</a></li>
+                    <li><a href="?lang=pt_BR" class="text-white hover:bg-blue-700 px-4 py-2 block" th:text="#{lang.pt}">🇧🇷 Português</a></li>
+                    <li><a href="?lang=en_US" class="text-white hover:bg-blue-700 px-4 py-2 block"  th:text="#{lang.en}">🏴 English</a></li>
                 </ul>
             </details>
         </div>
@@ -44,10 +46,11 @@
 
     <!-- Barra de busca -->
     <form th:action="@{/vaga/search}" method="get" class="flex justify-center gap-2 mb-6">
-        <input type="text" name="empresa" placeholder="Buscar por empresa..." class="input input-bordered w-80" />
-        <input type="text" name="titulo" placeholder="Buscar por título..." class="input input-bordered w-80" />
+        <input type="text" name="empresa" th:placeholder="#{placeholder.empresa}" class="input input-bordered w-80" />
+        <input type="text" name="titulo" th:placeholder="#{placeholder.titulo}" class="input input-bordered w-80" />
         <button type="submit" class="btn btn-primary">
-            <i class="fas fa-search mr-2"></i> Buscar
+            <i class="fas fa-search mr-2"></i>
+            <span th:text="#{btn.search}">Buscar</span>
         </button>
     </form>
 
@@ -72,11 +75,13 @@
             </div>
             <div class="card-actions justify-end p-4">
                 <a th:href="@{/vaga/edit/{id}(id=${vaga.id})}" class="btn btn-warning btn-sm">
-                    <i class="fas fa-edit mr-1"></i> Editar
+                    <i class="fas fa-edit mr-1"></i>
+                    <span th:text="#{btn.edit}"> Editar</span>
                 </a>
                 <form th:action="@{/vaga/delete/{id}(id=${vaga.id})}" method="post" style="display:inline;">
                     <button type="submit" class="btn btn-error btn-sm">
-                        <i class="fas fa-trash mr-1"></i> Excluir
+                        <i class="fas fa-trash mr-1"></i>
+                        <span th:text="#{btn.delete}"> Excluir</span>
                     </button>
                 </form>
             </div>
@@ -85,10 +90,11 @@
         <!-- Estado vazio -->
         <div th:if="${vagas.empty}" class="empty-state col-span-full text-center py-16 text-gray-500">
             <i class="fas fa-briefcase text-5xl mb-4"></i>
-            <h3 class="text-xl font-bold mb-2">Nenhuma vaga cadastrada</h3>
-            <p>Não há vagas disponíveis no sistema no momento.</p>
+            <h3 class="text-xl font-bold mb-2" th:text="#{empty.title}">Nenhuma vaga cadastrada</h3>
+            <p th:text="#{empty.subtitle}">Não há vagas disponíveis no sistema no momento.</p>
             <a href="/vaga/form" class="btn btn-primary mt-4">
-                <i class="fas fa-plus mr-2"></i> Criar Primeira Vaga
+                <i class="fas fa-plus mr-2"></i>
+                <span th:text="#{empty.create}">Criar Primeira Vaga</span>
             </a>
         </div>
     </main>

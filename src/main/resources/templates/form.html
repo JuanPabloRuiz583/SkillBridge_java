@@ -18,62 +18,67 @@
     <form method="POST" class="w-full max-w-2xl bg-white shadow-xl rounded-lg p-6" th:object="${vaga}"
           th:action="${vaga.id != null} ? @{/vaga/edit/{id}(id=${vaga.id})} : @{/vaga/form}">
 
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
         <!-- Erros globais -->
         <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-error mb-4">
-            <span th:each="err : ${#fields.globalErrors()}" th:text="${err}"></span>
+            <ul>
+                <li th:each="err : ${#fields.globalErrors()}" th:text="${err.defaultMessage}">Erro global</li>
+            </ul>
         </div>
 
-        <h2 class="text-lg font-bold mb-4 text-gray-700" th:text="${vaga.id != null} ? 'Editar Vaga' : 'Criar Nova Vaga'"></h2>
+        <h2 class="text-lg font-bold mb-4 text-gray-700" th:text="${vaga.id != null} ? #{vaga.edit.subtitle} : #{vaga.new.subtitle}">Criar Nova Vaga</h2>
 
         <!-- Título -->
         <fieldset class="fieldset mb-4">
-            <legend class="fieldset-legend">Título da Vaga</legend>
+            <legend class="fieldset-legend" th:text="#{label.titulo}">Título da Vaga</legend>
             <input th:field="*{titulo}" th:errorclass="input-error"
                    type="text" class="input input-bordered w-full"
-                   placeholder="Ex: Desenvolvedor Java Sênior" maxlength="120" />
-            <p class="label text-error" th:errors="*{titulo}"></p>
-            <p class="label text-gray-500 text-xs mt-1">Máximo 120 caracteres</p>
+                   th:placeholder="#{placeholder.titulo}" maxlength="120" />
+            <p class="label text-error mt-1" th:errors="*{titulo}"></p>
+            <p class="label text-gray-500 text-xs mt-1" th:text="#{hint.titulo.max}">Máximo 120 caracteres</p>
         </fieldset>
 
         <!-- Empresa -->
         <fieldset class="fieldset mb-4">
-            <legend class="fieldset-legend">Nome da Empresa</legend>
+            <legend class="fieldset-legend" th:text="#{label.empresa}">Nome da Empresa</legend>
             <input th:field="*{empresa}" th:errorclass="input-error"
                    type="text" class="input input-bordered w-full"
-                   placeholder="Ex: Tech Solutions Ltda" maxlength="100" />
-            <p class="label text-error" th:errors="*{empresa}"></p>
-            <p class="label text-gray-500 text-xs mt-1">Máximo 100 caracteres</p>
+                   th:placeholder="#{placeholder.empresa}" maxlength="100" />
+            <p class="label text-error mt-1" th:errors="*{empresa}"></p>
+            <p class="label text-gray-500 text-xs mt-1" th:text="#{hint.empresa.max}">Máximo 100 caracteres</p>
         </fieldset>
 
         <!-- Local -->
         <fieldset class="fieldset mb-4">
-            <legend class="fieldset-legend">Local</legend>
+            <legend class="fieldset-legend" th:text="#{label.local}">Local</legend>
             <input th:field="*{local}" th:errorclass="input-error"
                    type="text" class="input input-bordered w-full"
-                   placeholder="Ex: São Paulo, SP - Remoto" maxlength="200" />
-            <p class="label text-error" th:errors="*{local}"></p>
-            <p class="label text-gray-500 text-xs mt-1">Máximo 200 caracteres</p>
+                   th:placeholder="#{placeholder.local}" maxlength="200" />
+            <p class="label text-error mt-1" th:errors="*{local}"></p>
+            <p class="label text-gray-500 text-xs mt-1" th:text="#{hint.local.max}">Máximo 200 caracteres</p>
         </fieldset>
 
         <!-- Requisitos -->
         <fieldset class="fieldset mb-6">
-            <legend class="fieldset-legend">Requisitos</legend>
+            <legend class="fieldset-legend" th:text="#{label.requisitos}">Requisitos</legend>
             <textarea th:field="*{requisitos}" th:errorclass="input-error"
                       class="textarea textarea-bordered w-full h-32"
-                      placeholder="Descreva os requisitos e qualificações necessárias..."
+                      th:placeholder="#{placeholder.requisitos}"
                       maxlength="300"></textarea>
-            <p class="label text-error" th:errors="*{requisitos}"></p>
-            <p class="label text-gray-500 text-xs mt-1">Máximo 300 caracteres</p>
+            <p class="label text-error mt-1" th:errors="*{requisitos}"></p>
+            <p class="label text-gray-500 text-xs mt-1" th:text="#{hint.requisitos.max}">Máximo 300 caracteres</p>
         </fieldset>
 
         <!-- Botões -->
         <div class="flex justify-between">
-            <a href="/vaga" class="btn btn-neutral">
-                <i class="fas fa-arrow-left mr-2"></i> Cancelar
+            <a th:href="@{/vaga}" class="btn btn-neutral">
+                <i class="fas fa-arrow-left mr-2"></i>
+                <span th:text="#{btn.cancel}">Cancelar</span>
             </a>
             <button type="submit" class="btn btn-primary">
                 <i class="fas fa-save mr-2"></i>
-                <span th:text="${vaga.id != null} ? 'Atualizar' : 'Salvar'"></span>
+                <span th:text="${vaga.id != null} ? #{btn.update} : #{btn.save}">Salvar</span>
             </button>
         </div>
     </form>
