@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" />
+    <title>SkillBridge - Candidatura</title>
+</head>
+<body class="bg-base-200 min-h-screen flex flex-col">
+
+<header class="bg-blue-600 text-white p-4 shadow-lg">
+    <h1 class="text-2xl font-bold" th:text="${candidatura.id} != null ? 'Editar Candidatura' : 'Nova Candidatura'"></h1>
+</header>
+
+<main class="flex-grow grid grid-cols-1 gap-6 p-6 place-items-center">
+    <form method="POST" class="w-full max-w-2xl bg-white shadow-xl rounded-lg p-6"
+          th:object="${candidatura}"
+          th:action="${candidatura.id} != null ? @{/candidatura/edit/{id}(id=${candidatura.id})} : @{/candidatura/form}">
+
+        <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-error mb-4">
+            <ul>
+                <li th:each="err : ${#fields.globalErrors()}" th:text="${err}"></li>
+            </ul>
+        </div>
+
+        <h2 class="text-lg font-bold mb-4 text-gray-700" th:text="${candidatura.id} != null ? 'Editar Candidatura' : 'Criar Nova Candidatura'"></h2>
+
+        <fieldset class="fieldset mb-4">
+            <legend class="fieldset-legend">Vaga</legend>
+            <select th:field="*{vagaId}" th:errorclass="input-error" class="select select-bordered w-full">
+                <option value="">-- selecione --</option>
+                <option th:each="v : ${vagas}" th:value="${v.id}" th:text="${v.titulo}">Vaga</option>
+            </select>
+            <p class="label text-error mt-1" th:errors="*{vagaId}"></p>
+        </fieldset>
+
+        <fieldset class="fieldset mb-4">
+            <legend class="fieldset-legend">Nome</legend>
+            <input th:field="*{nome}" th:errorclass="input-error" type="text" class="input input-bordered w-full"
+                   placeholder="Nome completo" maxlength="150" />
+            <p class="label text-error mt-1" th:errors="*{nome}"></p>
+            <p class="label text-gray-500 text-xs mt-1">Máximo 150 caracteres</p>
+        </fieldset>
+
+        <fieldset class="fieldset mb-4">
+            <legend class="fieldset-legend">Email</legend>
+            <input th:field="*{email}" th:errorclass="input-error" type="email" class="input input-bordered w-full"
+                   placeholder="seu@exemplo.com" maxlength="200" />
+            <p class="label text-error mt-1" th:errors="*{email}"></p>
+        </fieldset>
+
+        <fieldset class="fieldset mb-4">
+            <legend class="fieldset-legend">Telefone</legend>
+            <input th:field="*{telefone}" th:errorclass="input-error" type="text" class="input input-bordered w-full"
+                   placeholder="(00) 00000-0000" maxlength="50" />
+            <p class="label text-error mt-1" th:errors="*{telefone}"></p>
+        </fieldset>
+
+        <fieldset class="fieldset mb-4">
+            <legend class="fieldset-legend">Currículo / Observações</legend>
+            <textarea th:field="*{curriculo}" th:errorclass="input-error"
+                      class="textarea textarea-bordered w-full h-40"
+                      placeholder="Cole o resumo do currículo ou observações..." maxlength="10000"></textarea>
+            <p class="label text-error mt-1" th:errors="*{curriculo}"></p>
+        </fieldset>
+
+        <fieldset class="fieldset mb-4">
+            <legend class="fieldset-legend">Status</legend>
+            <select th:field="*{status}" th:errorclass="input-error" class="select select-bordered w-full">
+                <option th:value="PENDENTE">PENDENTE</option>
+                <option th:value="APROVADO">APROVADO</option>
+                <option th:value="REJEITADO">REJEITADO</option>
+            </select>
+            <p class="label text-error mt-1" th:errors="*{status}"></p>
+        </fieldset>
+
+        <fieldset class="fieldset mb-6">
+            <legend class="fieldset-legend">Data de Aplicação</legend>
+            <input th:field="*{dataAplicacao}" th:errorclass="input-error" type="datetime-local" class="input input-bordered w-full" />
+            <p class="label text-error mt-1" th:errors="*{dataAplicacao}"></p>
+        </fieldset>
+
+        <div class="flex justify-between">
+            <a href="/candidatura" class="btn btn-neutral">Cancelar</a>
+            <button type="submit" class="btn btn-primary">
+                <span th:text="${candidatura.id} != null ? 'Atualizar' : 'Salvar'"></span>
+            </button>
+        </div>
+    </form>
+</main>
+
+</body>
+</html>
