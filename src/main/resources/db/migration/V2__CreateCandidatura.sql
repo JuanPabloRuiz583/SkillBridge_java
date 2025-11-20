@@ -11,4 +11,5 @@ CREATE TABLE candidatura
     CONSTRAINT pk_candidatura PRIMARY KEY (id),
     CONSTRAINT fk_candidatura_vaga FOREIGN KEY (vaga_id) REFERENCES vaga (id) ON DELETE CASCADE
 );
+
 CREATE INDEX idx_candidatura_vaga_id ON candidatura (vaga_id);
