@@ -1,7 +1,8 @@
+<!-- html -->
 <html lang="pt-BR" data-theme="light" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8" />
-  <title>SkillBridge - Candidaturas</title>
+  <title th:text="#{candidatura.page.title}">SkillBridge - Candidaturas</title>
   <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -19,19 +20,19 @@
   <div class="flex justify-between items-center mb-6">
     <div class="flex gap-3">
       <a href="/vaga/form" class="btn btn-primary">
-        <i class="fas fa-plus mr-2"></i> Nova Vaga
+        <i class="fas fa-plus mr-2"></i> <span th:text="#{btn.new.vaga}">Nova Vaga</span>
       </a>
       <a href="/chat" class="btn btn-secondary">
-        <i class="fas fa-robot mr-2"></i> Falar com a SkillBridge ia
+        <i class="fas fa-robot mr-2"></i> <span th:text="#{btn.chat}">Falar com a SkillBridge ia</span>
       </a>
       <a href="/candidatura" class="btn btn-info">
-        <i class="fas fa-clipboard-list mr-2"></i> Ir para Candidaturas
+        <i class="fas fa-clipboard-list mr-2"></i> <span th:text="#{btn.candidatura}">Ir para Candidaturas</span>
       </a>
     </div>
     <div class="flex items-center gap-3">
       <img th:src="${avatar}" alt="Avatar" class="w-10 h-10 rounded-full border-2 border-blue-600">
       <span th:text="${user.attributes.name != null ? user.attributes.name : user.attributes.login}" class="font-semibold text-blue-700"></span>
-      <a href="/logout" class="btn btn-error">Logout</a>
+      <a href="/logout" class="btn btn-error"><span th:text="#{btn.logout}">Logout</span></a>
       <details>
         <summary class="btn btn-primary">🌎</summary>
         <ul class="bg-blue-600 rounded-t-none p-2">
@@ -44,9 +45,9 @@
 
   <!-- Ações / Nova -->
   <div class="flex justify-between items-center mb-6">
-    <h2 class="text-2xl font-bold text-gray-700">Candidaturas</h2>
+    <h2 class="text-2xl font-bold text-gray-700" th:text="#{candidatura.title}">Candidaturas</h2>
     <a href="/candidatura/form" class="btn btn-success">
-      <i class="fas fa-plus mr-2"></i> Nova Candidatura
+      <i class="fas fa-plus mr-2"></i> <span th:text="#{btn.new.candidatura}">Nova Candidatura</span>
     </a>
   </div>
 
@@ -72,18 +73,18 @@
         </div>
 
         <div class="mt-4">
-          <p class="text-sm font-semibold text-gray-700" th:text="'Vaga: ' + (c.vaga != null ? c.vaga.titulo : '-')">Vaga: 1</p>
+          <p class="text-sm font-semibold text-gray-700" th:text="#{label.vaga} + ' ' + (c.vaga != null ? c.vaga.titulo : '-')">Vaga: 1</p>
           <div class="mt-2 text-gray-600 text-sm truncate" th:text="${c.curriculo}">Resumo do currículo...</div>
         </div>
       </div>
 
       <div class="card-actions justify-end p-4">
         <a th:href="@{/candidatura/edit/{id}(id=${c.id})}" class="btn btn-warning btn-sm">
-          <i class="fas fa-edit mr-1"></i> Editar
+          <i class="fas fa-edit mr-1"></i> <span th:text="#{btn.edit}">Editar</span>
         </a>
         <form th:action="@{/candidatura/delete/{id}(id=${c.id})}" method="post" style="display:inline;">
           <button type="submit" class="btn btn-error btn-sm">
-            <i class="fas fa-trash mr-1"></i> Excluir
+            <i class="fas fa-trash mr-1"></i> <span th:text="#{btn.delete}">Excluir</span>
           </button>
         </form>
       </div>
@@ -92,10 +93,10 @@
     <!-- Estado vazio -->
     <div th:if="${candidaturas.empty}" class="empty-state col-span-full text-center py-16 text-gray-500">
       <i class="fas fa-clipboard-list text-5xl mb-4"></i>
-      <h3 class="text-xl font-bold mb-2">Nenhuma candidatura encontrada</h3>
-      <p>Não há candidaturas cadastradas no sistema no momento.</p>
+      <h3 class="text-xl font-bold mb-2" th:text="#{candidatura.empty.title}">Nenhuma candidatura encontrada</h3>
+      <p th:text="#{candidatura.empty.subtitle}">Não há candidaturas cadastradas no sistema no momento.</p>
       <a href="/candidatura/form" class="btn btn-primary mt-4">
-        <i class="fas fa-plus mr-2"></i> Criar Primeira Candidatura
+        <i class="fas fa-plus mr-2"></i> <span th:text="#{candidatura.empty.create}">Criar Primeira Candidatura</span>
       </a>
     </div>
   </main>
