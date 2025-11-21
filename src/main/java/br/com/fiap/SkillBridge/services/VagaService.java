@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Camada de serviço para regras de negócio relacionadas à entidade Vaga.
@@ -32,9 +33,11 @@ public class VagaService {
     private static final Logger log = LoggerFactory.getLogger(VagaService.class);
 
     private final VagaRepository vagaRepository;
-    private final RabbitProducerService rabbitProducer;
+    private final Optional<RabbitProducerService> rabbitProducer;
+    //private final RabbitProducerService rabbitProducer;
+    //RabbitProducerService rabbitProducer
 
-    public VagaService(VagaRepository vagaRepository, RabbitProducerService rabbitProducer) {
+    public VagaService(VagaRepository vagaRepository,  Optional<RabbitProducerService> rabbitProducer) {
         this.vagaRepository = vagaRepository;
         this.rabbitProducer = rabbitProducer;
     }
@@ -103,7 +106,7 @@ public class VagaService {
         }
 
         Vaga saved = vagaRepository.save(vaga);
-        rabbitProducer.sendVagaEvent(new VagaEventDto(saved.getId(), "CREATED"));
+        rabbitProducer.ifPresent(p -> p.sendVagaEvent(new VagaEventDto(saved.getId(), "CREATED")));
         log.info("Vaga criada com sucesso. id={}", saved.getId());
         return saved;
     }
@@ -131,7 +134,7 @@ public class VagaService {
         existente.setLocal(vaga.getLocal());
 
         Vaga updated = vagaRepository.save(existente);
-        rabbitProducer.sendVagaEvent(new VagaEventDto(updated.getId(), "UPDATED"));
+        rabbitProducer.ifPresent(p -> p.sendVagaEvent(new VagaEventDto(updated.getId(), "UPDATED")));
         log.info("Vaga atualizada com sucesso. id={}", updated.getId());
         return updated;
     }
@@ -149,6 +152,6 @@ public class VagaService {
     public void deleteById(Long id) {
         log.info("Excluindo vaga id={}", id);
         vagaRepository.deleteById(id);
-        rabbitProducer.sendVagaEvent(new VagaEventDto(id, "DELETED"));
+        rabbitProducer.ifPresent(p -> p.sendVagaEvent(new VagaEventDto(id, "DELETED")));
     }
 }
