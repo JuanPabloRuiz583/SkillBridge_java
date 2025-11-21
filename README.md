@@ -1,3 +1,6 @@
+# SkillBridge
+O SkillBridge é uma plataforma inteligente que ajuda pessoas a descobrir suas competências, planejar seu crescimento profissional e se reconectar com o mercado através de trilhas personalizadas de aprendizado com a ia e oportunidades cadastradas no nosso sistema. Por meio de IA generativa, o usuario consegue estudar vagas detalhadamente com base nos requisitos das vagas publicadas no sistema e com ajuda da ia.
+
 ## 📌 Visão Geral do Projeto
 
 O **SkillBridge Java** é uma aplicação backend que possui:
@@ -68,11 +71,15 @@ http://localhost:8080/vaga/form
 (acessível também clicando no botão "Nova vaga")
 
 Candidaturas —  Cadastro / Edição / Remoção / Listagem :
-http://localhost:8080/candidaturas
+http://localhost:8080/candidatura
 
 📝 Formulário de Candidaturas:
-http://localhost:8080/candidaturas/form
+http://localhost:8080/candidatura/form
 (acessível também clicando no botão "Cadastrar sensor")
+
+Tela da ia:
+http://localhost:8080/chat
+(acessível também clicando no botão "Falar com a SkillBridge IA")
 
 🔒 Logout:
 http://localhost:8080/logout
