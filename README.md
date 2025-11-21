@@ -8,6 +8,7 @@ O **SkillBridge Java** é uma aplicação backend que possui:
 - Integração com PostgreSQL.
 - Estrutura de mensageria assincrona com RabbitMQ para as vagas
 - migrations
+- Seeder no banco para deixar 3 vagas ja cadastradas no sistema
 - thymealif
 - deploy em Render.
 
@@ -64,17 +65,13 @@ http://localhost:8080/vaga
 
 📄 Formulário de vagas:
 http://localhost:8080/vaga/form
-(acessível também clicando no botão "Nova moto")
+(acessível também clicando no botão "Nova vaga")
 
-🏢 Pátios — Listagem (ver quais pátios estão disponíveis antes do cadastro):
-http://localhost:8080/patio
+Candidaturas —  Cadastro / Edição / Remoção / Listagem :
+http://localhost:8080/candidaturas
 
-📍 Sensores — Cadastro / Edição / Remoção / Listagem:
-http://localhost:8080/sensor-localizacao
-(para criar, é necessário ter uma moto cadastrada para vincular a placa)
-
-📝 Formulário de Sensores:
-http://localhost:8080/sensor-localizacao/form
+📝 Formulário de Candidaturas:
+http://localhost:8080/candidaturas/form
 (acessível também clicando no botão "Cadastrar sensor")
 
 🔒 Logout:
