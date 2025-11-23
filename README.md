@@ -86,3 +86,12 @@ http://localhost:8080/logout
 
 
 
+## Integrantes
+
+Juan Pablo Ruiz de Souza, rm: 557727 (2TDSPZ)
+
+Rafael Rodrigues de Almeida, rm: 557837 (2TDSPZ)
+
+Lucas Kenji Miyahira, rm: 555368 (2TDSPZ)
+
+
